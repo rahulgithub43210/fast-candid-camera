@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, FastCandidCameraActivity!</string>
+    <string name="app_name">「快偷拍」</string>
+    <string name="openNoviceGuide">开启新手导航</string>
+    <string name="openCamera">去偷拍</string>
+    <string name="setting">去设置</string>
+    <string name="functionInfo">设置</string>
+</resources>
