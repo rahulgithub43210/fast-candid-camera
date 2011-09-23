@@ -164,14 +164,13 @@ public class CameraPreview extends Activity {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN)
+			audioControl(true);
 			takePicture();
 		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
-
 		menu.add(0, 0, 0, "退出相机");
 		menu.add(0, 1, 0, "功能切换");
 		menu.add(0, 2, 0, "退出菜单");
@@ -180,7 +179,6 @@ public class CameraPreview extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case 0:
 			System.exit(0);
@@ -196,25 +194,13 @@ public class CameraPreview extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
-		audioControl(false);//开始声音，取消静音
+		try {
+			audioControl(false);//开始声音，取消静音
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		wakeLock.release();// 释放锁
 	}
 
 }
-
-// try {
-// audioManager = (AudioManager)
-// getSystemService(Context.AUDIO_SERVICE);// 获得声音系统服务
-// audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);// 设置静音模式
-// ivFocus = new ImageView(this);
-// powerManager = (PowerManager)
-// getSystemService(Context.POWER_SERVICE);// 获得电源服务
-// wakeLock = powerManager.newWakeLock(
-// PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "XYTEST");// 屏幕亮，键盘灯关，不休眠
-//
-// wakeLock.acquire();// 加鎖
-// } catch (Exception e) {
-// e.printStackTrace();
-// }

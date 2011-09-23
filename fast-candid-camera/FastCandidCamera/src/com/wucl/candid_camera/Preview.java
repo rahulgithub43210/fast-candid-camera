@@ -17,8 +17,9 @@ import android.widget.ImageView.ScaleType;
 
 /**
  * 实际拍摄动作
+ * 
  * @author wuchenliang
- *
+ * 
  */
 class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder holder;
@@ -53,13 +54,11 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		holder.addCallback(this);
 		// 设置SurfaceHolder对象的类型
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		
-		
-		
 
 	}
 
-	public Preview(Context context, CameraPreview cameraPreview, ImageView ivFocus) {
+	public Preview(Context context, CameraPreview cameraPreview,
+			ImageView ivFocus) {
 		super(context);
 		// 获得SurfaceHolder对象
 		holder = getHolder();
@@ -70,11 +69,10 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		this.cameraPreview = cameraPreview;
 		this.context = context;
 		this.ivFocus = ivFocus;
-		
-		
+
 	}
 
-	// 开厹拍照时调用该方法
+	// 开始拍照时调用该方法
 	public void surfaceCreated(SurfaceHolder holder) {
 		// 获得Camera对象
 		camera = Camera.open();
@@ -97,14 +95,14 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	// 拍照状态变化时调用该方法
-	public void surfaceChanged(SurfaceHolder holder, int format, int w,
-			int h) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		try {
 			Camera.Parameters parameters = camera.getParameters();
 			// 设置照片格式
 			parameters.setPictureFormat(PixelFormat.JPEG);
 			// 根据屏幕方向设置预浏尺寸
-			if (((Activity) context).getWindowManager().getDefaultDisplay().getOrientation() == 0)
+			if (((Activity) context).getWindowManager().getDefaultDisplay()
+					.getOrientation() == 0)
 				parameters.setPreviewSize(h, w);
 			else
 				parameters.setPreviewSize(w, h);
