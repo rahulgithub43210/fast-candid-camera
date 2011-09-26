@@ -30,66 +30,30 @@ import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
 /**
- * 拍摄控制逻辑
+ * 拍摄控制逻辑 上键开始拍摄。 下键控制拍摄张数，5，10，15，20。循环选择。
  * 
  * @author wuchenliang
- * 
  */
 public class CameraPreview extends Activity {
 	private Preview preview;
 	private ImageView ivFocus;
 	private int repeatCount = 0;// 记录点击返回键的次数
 	private long lastTime = 0;// 上一次点击返回键的时间
-	private AudioManager audioManager;
-	private PowerManager powerManager;
 	private WakeLock wakeLock;
 	WindowManager.LayoutParams lp;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		/** 全屏设置，隐藏窗口所有装饰 */
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		UtilHelp.set_no_title_fullscreen(this);
 		lp = getWindow().getAttributes();
 		try {
 			ivFocus = new ImageView(this);
 		} catch (Exception e) {
 		}
-		preview = new Preview(this,this,ivFocus);
+		preview = new Preview(this, this, ivFocus);
 		setContentView(preview);
-		screenControl();
-	}
-
-	/**
-	 * 控制屏幕，键盘灯，呼吸灯
-	 */
-	private void screenControl() {
-		powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);// 获得电源服务
-		wakeLock = powerManager.newWakeLock(
-				PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "XYTEST");// 屏幕亮，键盘灯关，不休眠
-		wakeLock.acquire();// 加鎖
-	}
-
-	/**
-	 * 设置静音
-	 */
-	private void audioControl(boolean control) {
-		if (control) {
-
-			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);// 获得声音系统服务
-			audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);// 设置静音模式
-			audioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
-			audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);// 设置静音模式
-		} else {
-//			try {
-				audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//			} catch (NullPointerException e) {
-//				e.printStackTrace();
-//			}
-		}
-
+		wakeLock = UtilHelp.screenControl(this);
 	}
 
 	/*
@@ -103,22 +67,14 @@ public class CameraPreview extends Activity {
 		int action = event.getAction();
 		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
 			// 是否设置为静音
-			audioControl(true);
+			UtilHelp.audioControl(this, true);
 			takePicture();
-			// 解除静音
-//			audioControl(false);
-			System.out.println("==========================");
-			// Toast.makeText(this, "拍摄成功", Toast.LENGTH_SHORT);
 			// if (action == KeyEvent.ACTION_DOWN) {
 			// // 拍摄
-			//
 			// }
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-			System.out.println("==========================");
-			// lp.screenBrightness = 0.0f;
-			System.out.println("==========================");
-			// Toast.makeText(this, "拍摄成功", Toast.LENGTH_SHORT);
+
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_BACK) {
 			// 连续点击3此返回退出程序
@@ -164,8 +120,8 @@ public class CameraPreview extends Activity {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN)
-			audioControl(true);
-			takePicture();
+			UtilHelp.audioControl(this, true);
+		takePicture();
 		return true;
 	}
 
@@ -184,6 +140,7 @@ public class CameraPreview extends Activity {
 			System.exit(0);
 			break;
 		case 1:
+			// 进入设置
 			break;
 		case 2:
 			this.closeOptionsMenu();// 关闭菜单
@@ -196,13 +153,12 @@ public class CameraPreview extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		try {
-			audioControl(false);//开始声音，取消静音
+			UtilHelp.audioControl(this, false);// 开启声音，取消静音
 		} catch (Exception e) {
 			// TODO: handle exception
-			audioControl(true);
-			audioControl(false);
+			UtilHelp.audioControl(this, true);
+			UtilHelp.audioControl(this, false);
 		}
 		wakeLock.release();// 释放锁
 	}
-
 }
