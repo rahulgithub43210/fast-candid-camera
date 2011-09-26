@@ -35,7 +35,7 @@ import android.widget.Toast;
  * @author wuchenliang
  */
 public class CameraPreview extends Activity {
-	private Preview preview;
+	private Preview mPreview;
 	private ImageView ivFocus;
 	private int repeatCount = 0;// 记录点击返回键的次数
 	private long lastTime = 0;// 上一次点击返回键的时间
@@ -52,8 +52,8 @@ public class CameraPreview extends Activity {
 			ivFocus = new ImageView(this);
 		} catch (Exception e) {
 		}
-		preview = new Preview(this, this, ivFocus);
-		setContentView(preview);
+		mPreview = new Preview(this, this, ivFocus);
+		setContentView(mPreview);
 		wakeLock = UtilHelp.screenControl(this);
 	}
 
@@ -107,7 +107,7 @@ public class CameraPreview extends Activity {
 
 	private void takePicture() {
 		try {
-			preview.takePicture();
+			mPreview.takePicture();
 		} catch (Exception e) {
 			this.onDestroy();
 		}
