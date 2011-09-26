@@ -30,7 +30,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
 /**
- * 拍摄控制逻辑 上键开始拍摄。 下键控制拍摄张数，5，10，15，20。循环选择。
+ * 拍摄控制逻辑 上键开始拍摄。 下键控制拍摄张数，1，5，10，15，20。循环选择。
  * 
  * @author wuchenliang
  */
@@ -41,6 +41,7 @@ public class CameraPreview extends Activity {
 	private long lastTime = 0;// 上一次点击返回键的时间
 	private WakeLock wakeLock;
 	WindowManager.LayoutParams lp;
+	private int countOfNext=1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class CameraPreview extends Activity {
 	}
 
 	/*
-	 * 向上按键，拍摄按键，单次拍摄一张，向下按键连拍指定张数 (non-Javadoc)
+	 * 向上按键，拍摄按键，开启拍摄，向下按键调整指定张数 (1，5，10，15，20)
 	 * 
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 * 重写按键监听事件，向上按键为拍摄，向下按键为推出 三次点击返回键退出拍摄
