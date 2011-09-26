@@ -1,33 +1,14 @@
 package com.wucl.candid_camera;
 
-import java.io.IOException;
 import android.app.Activity;
-import android.app.Application;
-import android.app.KeyguardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.hardware.Camera;
-import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.PictureCallback;
-import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.Window;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.Toast;
 
 /**
  * 拍摄控制逻辑 上键开始拍摄。 下键控制拍摄张数，1，5，10，15，20。循环选择。
@@ -41,7 +22,7 @@ public class CameraPreview extends Activity {
 	private long lastTime = 0;// 上一次点击返回键的时间
 	private WakeLock wakeLock;
 	WindowManager.LayoutParams lp;
-	private int countOfNext=1;
+	private int countOfNext = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,36 +47,19 @@ public class CameraPreview extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		int action = event.getAction();
-		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP
+				|| keyCode == KeyEvent.KEYCODE_CAMERA) {
 			// 是否设置为静音
 			UtilHelp.audioControl(this, true);
 			takePicture();
 			// if (action == KeyEvent.ACTION_DOWN) {
-			// // 拍摄
 			// }
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// 连续点击3此返回退出程序
-			// event.getRepeatCount() 无法使用，无论怎么点击，返回的int = 0；
-			System.out.println("repeatcount " + event.getRepeatCount() + " +"
-					+ event.getDownTime() + " +" + lastTime);
-			if (event.getDownTime() - lastTime < 1000) {// 两次点击不超过1秒
-				System.out
-						.println("time : " + (event.getDownTime() - lastTime));
-				repeatCount = repeatCount + 1;
-			} else {
-				repeatCount = 0;
-			}
-			if (repeatCount == 2) {// 三次点击
-				Toast.makeText(getApplicationContext(), "退出相機",
-						Toast.LENGTH_SHORT);
-				System.out.println("3repeatcount   " + repeatCount);
-				System.exit(0);
-			}
-			lastTime = event.getDownTime();
+			clickToBack(event);
 			return true;
 		} else {
 			System.out.println("==========================");
@@ -105,6 +69,26 @@ public class CameraPreview extends Activity {
 		return false;
 	}
 
+	/**
+	 *  连续点击3此返回退出程序
+	 * @param event
+	 */
+	public void clickToBack(KeyEvent event) {
+		
+		if (event.getDownTime() - lastTime < 1000) {// 两次点击不超过1秒
+			repeatCount = repeatCount + 1;
+		} else {
+			repeatCount = 0;
+		}
+		if (repeatCount == 2) {// 三次点击
+			System.exit(0);
+		}
+		lastTime = event.getDownTime();
+	}
+
+	/**
+	 * 拍摄照片的封装
+	 */
 	private void takePicture() {
 		try {
 			mPreview.takePicture();
@@ -114,9 +98,8 @@ public class CameraPreview extends Activity {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent) 通过触屏触发拍摄
+	 * 通过触屏触发拍摄
+	 * @see android.app.Activity#onTouchEvent(android.view.MotionEvent) 
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -156,7 +139,6 @@ public class CameraPreview extends Activity {
 		try {
 			UtilHelp.audioControl(this, false);// 开启声音，取消静音
 		} catch (Exception e) {
-			// TODO: handle exception
 			UtilHelp.audioControl(this, true);
 			UtilHelp.audioControl(this, false);
 		}
