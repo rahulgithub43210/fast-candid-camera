@@ -101,11 +101,11 @@ public class CameraControlActivity extends Activity {
 	private void savePic(Bitmap cameraBitmap) {
 		File myCaptureFile = new File(setPicPath("sdcard", "camera", ".jpg"));
 		// myCaptureFile.mkdirs();
-		// if (myCaptureFile.canRead())
-		// Log.v("EagleTag", "very bad-canRead");
-		//
-		// if (myCaptureFile.canWrite())
-		// Log.v("EagleTag", "very bad-canRead");
+//		 if (myCaptureFile.canRead())
+//		 Log.v("EagleTag", "very bad-canRead");
+//		
+//		 if (myCaptureFile.canWrite())
+//		 Log.v("EagleTag", "very bad-canRead");
 		try {
 			myCaptureFile.createNewFile();
 			FileOutputStream fileStream = new FileOutputStream(myCaptureFile);
