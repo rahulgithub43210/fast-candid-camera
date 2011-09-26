@@ -162,8 +162,10 @@ public class CameraPreview extends Activity
 	public boolean onTouchEvent(MotionEvent event)
 	{
 		if (event.getAction() == MotionEvent.ACTION_DOWN)
+		{
 			UtilHelp.audioControl(this, true);
-		takePicture();
+			takePicture();
+		}
 		return true;
 	}
 
