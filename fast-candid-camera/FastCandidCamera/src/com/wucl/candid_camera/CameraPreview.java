@@ -199,6 +199,8 @@ public class CameraPreview extends Activity {
 			audioControl(false);//开始声音，取消静音
 		} catch (Exception e) {
 			// TODO: handle exception
+			audioControl(true);
+			audioControl(false);
 		}
 		wakeLock.release();// 释放锁
 	}
