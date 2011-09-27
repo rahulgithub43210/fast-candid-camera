@@ -26,7 +26,7 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder holder;
 	private Camera camera;
 	private ImageView ivFocus;
-	private CameraPreview cameraPreview;
+	private CameraPreviewActivity cameraPreview;
 	private boolean af = false;
 	// 创建一个PictureCallback对象，并实现其中的onPictureTaken方法
 	private PictureCallback pictureCallback = new PictureCallback() {
@@ -57,7 +57,7 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	// }
 
-	public Preview(Context context, CameraPreview cameraPreview,
+	public Preview(Context context, CameraPreviewActivity cameraPreview,
 			ImageView ivFocus) {
 		super(context);
 		// 获得SurfaceHolder对象
