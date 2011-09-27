@@ -39,7 +39,7 @@ public class CameraPreview extends Activity
 		catch (Exception e)
 		{
 		}
-		mPreview = new Preview(this, this, mIvFocus);
+		mPreview = new Preview(getBaseContext(), this, mIvFocus);
 		setContentView(mPreview);
 		wakeLock = UtilHelp.screenControl(this);
 	}
