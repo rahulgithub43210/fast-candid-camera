@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -36,6 +37,15 @@ public class CameraControlActivity extends Activity {
 		mTakeVideoButton = (Button) findViewById(R.id.btnTakeVideo);
 		mImagePlayback = (ImageView) findViewById(R.id.imageview);
 
+		mTakePictureButton.setVisibility(8);
+		mTakeVideoButton.setVisibility(8);
+//		android view的setVisibility方法值的意思
+//		有三个值 visibility  One of VISIBLE, INVISIBLE, or GONE.
+//
+//		常量值为0，意思是可见的
+//		常量值为4，意思是不可见的
+//		常量值为8，意思是不可见的，而且不占用布局空间 
+		
 		mTakePictureButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -43,7 +53,7 @@ public class CameraControlActivity extends Activity {
 				Intent intent = new Intent(CameraControlActivity.this,
 						CameraPreview.class);
 				startActivityForResult(intent, 1);
-				showToast("开启拍摄");
+				// showToast("开启拍摄");
 
 			}
 		});
@@ -52,10 +62,11 @@ public class CameraControlActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO 开启视频拍摄
-				showToast("开启拍摄");
 
 			}
 		});
+		
+		showToast("按上键拍摄");
 	}
 
 	// 返回拍摄结果处理
@@ -101,18 +112,19 @@ public class CameraControlActivity extends Activity {
 	private void savePic(Bitmap cameraBitmap) {
 		File myCaptureFile = new File(setPicPath("sdcard", "camera", ".jpg"));
 		// myCaptureFile.mkdirs();
-//		 if (myCaptureFile.canRead())
-//		 Log.v("EagleTag", "very bad-canRead");
-//		
-//		 if (myCaptureFile.canWrite())
-//		 Log.v("EagleTag", "very bad-canRead");
+		// if (myCaptureFile.canRead())
+		// Log.v("EagleTag", "very bad-canRead");
+		//
+		// if (myCaptureFile.canWrite())
+		// Log.v("EagleTag", "very bad-canRead");
 		try {
 			myCaptureFile.createNewFile();
 			FileOutputStream fileStream = new FileOutputStream(myCaptureFile);
 			cameraBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileStream);
+			UtilHelp.vibrator(this);
 			// Toast.makeText(getBaseContext(), "文件已经保存",
 			// Toast.LENGTH_LONG);
-			showToast("文件已经保存");
+			showToast("文件已经保存，按上键继续拍摄");
 			fileStream.flush();
 			fileStream.close();
 
@@ -123,6 +135,28 @@ public class CameraControlActivity extends Activity {
 			// Toast.LENGTH_LONG);
 			showToast(e.toString());
 		}
+	}
+
+	/*
+	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+	 * 重写按键监听事件，向上按键为拍摄，向下按键为推出 三次点击返回键退出拍摄
+	 */
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+			int action = event.getAction();
+			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP
+					|| keyCode == KeyEvent.KEYCODE_CAMERA) {
+				Intent intent = new Intent(CameraControlActivity.this,
+						CameraPreview.class);
+				startActivityForResult(intent, 1);
+				return true;
+			} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
