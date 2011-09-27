@@ -16,7 +16,7 @@ import android.widget.Toast;
  * 
  * @author wuchenliang
  */
-public class CameraPreview extends Activity {
+public class CameraPreviewActivity extends Activity {
 	private Preview mPreview;
 	private ImageView mIvFocus;
 	private int mRepeatCount = 0;// 记录点击返回键的次数
@@ -131,29 +131,7 @@ public class CameraPreview extends Activity {
 		return true;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, 0, 0, "退出相机");
-		menu.add(0, 1, 0, "功能切换");
-		menu.add(0, 2, 0, "退出菜单");
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case 0:
-			System.exit(0);
-			break;
-		case 1:
-			// 进入设置
-			break;
-		case 2:
-			this.closeOptionsMenu();// 关闭菜单
-			break;
-		}
-		return false;
-	}
+	
 
 	/**
 	 * 拍摄照片的封装

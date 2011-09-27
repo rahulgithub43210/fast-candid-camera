@@ -17,27 +17,10 @@ public class SettingActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting);
+		
 
 	}
 
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//
-//		if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-//			System.out.println("==========================");
-////			Toast.makeText(this, "拍摄成功", Toast.LENGTH_SHORT);
-//			return true;
-//		} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-//			System.out.println("==========================");	
-//			System.out.println("==========================");
-////			Toast.makeText(this, "拍摄成功", Toast.LENGTH_SHORT);
-//			return true;
-//		} else {
-//			System.out.println("==========================");
-//			System.out.println(keyCode);
-//			System.out.println("==========================");
-//		}
-//
-//		return false;
-//	}
+
 
 }

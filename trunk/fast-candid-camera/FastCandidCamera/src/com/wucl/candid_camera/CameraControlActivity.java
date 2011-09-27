@@ -12,6 +12,8 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import android.widget.Toast;
 public class CameraControlActivity extends Activity {
 	public ImageView mImagePlayback;
 	private static final String PATHDIVISION = "/";
+	private static final int SettingActivityRequestCode = 2;
+	private static final int CameraActivityRequestCode = 1;
 	private Button mTakePictureButton;
 	private Button mTakeVideoButton;
 
@@ -51,7 +55,7 @@ public class CameraControlActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(CameraControlActivity.this,
-						CameraPreview.class);
+						CameraPreviewActivity.class);
 				startActivityForResult(intent, 1);
 				// showToast("开启拍摄");
 
@@ -72,24 +76,36 @@ public class CameraControlActivity extends Activity {
 	// 返回拍摄结果处理
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 1) {
+		if (requestCode == CameraActivityRequestCode) {
 			if (resultCode == 20) {
-				Bitmap cameraBitmap;
-				byte[] bytes = data.getExtras().getByteArray("bytes");
-				cameraBitmap = BitmapFactory.decodeByteArray(bytes, 0,
-						bytes.length);
-				// imageView.setImageBitmap(cameraBitmap);
-				if (getWindowManager().getDefaultDisplay().getOrientation() == 0) {
-					Matrix matrix = new Matrix();
-					matrix.setRotate(90);
-					cameraBitmap = Bitmap.createBitmap(cameraBitmap, 0, 0,
-							cameraBitmap.getWidth(), cameraBitmap.getHeight(),
-							matrix, true);
-				}
+				Bitmap cameraBitmap = readDataForBitmap(data);
 				savePic(cameraBitmap);
 			}
+		}else if(requestCode ==SettingActivityRequestCode){
+			
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	/**
+	 * 从data中获取bitmap数据
+	 * @param data
+	 * @return
+	 */
+	public Bitmap readDataForBitmap(Intent data) {
+		Bitmap cameraBitmap;
+		byte[] bytes = data.getExtras().getByteArray("bytes");
+		cameraBitmap = BitmapFactory.decodeByteArray(bytes, 0,
+				bytes.length);
+		// imageView.setImageBitmap(cameraBitmap);
+		if (getWindowManager().getDefaultDisplay().getOrientation() == 0) {
+			Matrix matrix = new Matrix();
+			matrix.setRotate(90);
+			cameraBitmap = Bitmap.createBitmap(cameraBitmap, 0, 0,
+					cameraBitmap.getWidth(), cameraBitmap.getHeight(),
+					matrix, true);
+		}
+		return cameraBitmap;
 	}
 
 	private String setPicPath(String path, String name, String expanded_name) {
@@ -148,13 +164,38 @@ public class CameraControlActivity extends Activity {
 			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP
 					|| keyCode == KeyEvent.KEYCODE_CAMERA) {
 				Intent intent = new Intent(CameraControlActivity.this,
-						CameraPreview.class);
-				startActivityForResult(intent, 1);
+						CameraPreviewActivity.class);
+				startActivityForResult(intent, CameraActivityRequestCode);
 				return true;
 			} else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 0, 0, "退出相机");
+		menu.add(0, 1, 0, "功能设置");
+		menu.add(0, 2, 0, "退出菜单");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 0:
+			System.exit(0);
+			break;
+		case 1:
+			Intent intent = new Intent(CameraControlActivity.this,SettingActivity.class);
+			startActivityForResult(intent, SettingActivityRequestCode);
+			break;
+		case 2:
+			this.closeOptionsMenu();// 关闭菜单
+			break;
 		}
 		return false;
 	}
