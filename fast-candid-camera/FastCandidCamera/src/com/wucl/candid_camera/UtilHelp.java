@@ -6,30 +6,29 @@ import android.media.AudioManager;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class UtilHelp {
-	Context context;
+	static Context context;
 	private static PowerManager powerManager;
 	private static WakeLock wakeLock;
 	private static AudioManager audioManager;
 
-	public UtilHelp(Context context) {
-		this.context = context;
-	}
 
 	// <uses-permission android:name="android.permission.VIBRATE" />
 	/**
 	 * 振动器控制
 	 */
-	public void vibrator() {
+	public static void vibrator(Context context) {
 
 		Vibrator vibrator = (Vibrator) context
 				.getSystemService(Context.VIBRATOR_SERVICE);
 
-		long[] pattern = { 800, 50, 400, 30 }; // OFF/ON/OFF/ON...
-		vibrator.vibrate(pattern, 2);
+		long[] pattern = { 1000, 100, 400, 100 }; // OFF/ON/OFF/ON...
+		vibrator.vibrate(pattern, -1);
 	}
 
 	public static void set_no_title_fullscreen(Activity activity) {
@@ -72,5 +71,13 @@ public class UtilHelp {
 			audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 		}
 
+	}
+	
+	
+	
+	public static void  get (Activity activity){
+		DisplayMetrics dm = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+		Log.i("","屏幕分辨率为:"+dm.widthPixels+" * "+dm.heightPixels);
 	}
 }
