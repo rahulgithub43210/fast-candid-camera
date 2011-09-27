@@ -145,6 +145,7 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	// 停止拍照，并将拍摄的照片传入PictureCallback接口的onPictureTaken方法
 	public void takePicture() {
 		if (camera != null && af == true) {
+			camera.autoFocus(null);// 自动对焦
 			camera.takePicture(null, null, pictureCallback);
 			af = false;
 		} else {
