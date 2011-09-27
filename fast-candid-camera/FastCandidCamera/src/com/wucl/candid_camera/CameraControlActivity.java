@@ -33,6 +33,7 @@ public class CameraControlActivity extends Activity {
 	private static final int CameraActivityRequestCode = 1;
 	private Button mTakePictureButton;
 	private Button mTakeVideoButton;
+	private File sdcardFilePatch;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,13 +44,14 @@ public class CameraControlActivity extends Activity {
 
 		mTakePictureButton.setVisibility(8);
 		mTakeVideoButton.setVisibility(8);
-//		android view的setVisibility方法值的意思
-//		有三个值 visibility  One of VISIBLE, INVISIBLE, or GONE.
-//
-//		常量值为0，意思是可见的
-//		常量值为4，意思是不可见的
-//		常量值为8，意思是不可见的，而且不占用布局空间 
-		
+		sdcardFilePatch = android.os.Environment.getExternalStorageDirectory();
+		// android view的setVisibility方法值的意思
+		// 有三个值 visibility One of VISIBLE, INVISIBLE, or GONE.
+		//
+		// 常量值为0，意思是可见的
+		// 常量值为4，意思是不可见的
+		// 常量值为8，意思是不可见的，而且不占用布局空间
+
 		mTakePictureButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -69,7 +71,7 @@ public class CameraControlActivity extends Activity {
 
 			}
 		});
-		
+
 		showToast("按上键拍摄");
 	}
 
@@ -81,29 +83,29 @@ public class CameraControlActivity extends Activity {
 				Bitmap cameraBitmap = readDataForBitmap(data);
 				savePic(cameraBitmap);
 			}
-		}else if(requestCode ==SettingActivityRequestCode){
-			
+		} else if (requestCode == SettingActivityRequestCode) {
+
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	/**
 	 * 从data中获取bitmap数据
+	 * 
 	 * @param data
 	 * @return
 	 */
 	public Bitmap readDataForBitmap(Intent data) {
 		Bitmap cameraBitmap;
 		byte[] bytes = data.getExtras().getByteArray("bytes");
-		cameraBitmap = BitmapFactory.decodeByteArray(bytes, 0,
-				bytes.length);
+		cameraBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 		// imageView.setImageBitmap(cameraBitmap);
 		if (getWindowManager().getDefaultDisplay().getOrientation() == 0) {
 			Matrix matrix = new Matrix();
 			matrix.setRotate(90);
 			cameraBitmap = Bitmap.createBitmap(cameraBitmap, 0, 0,
-					cameraBitmap.getWidth(), cameraBitmap.getHeight(),
-					matrix, true);
+					cameraBitmap.getWidth(), cameraBitmap.getHeight(), matrix,
+					true);
 		}
 		return cameraBitmap;
 	}
@@ -111,6 +113,8 @@ public class CameraControlActivity extends Activity {
 	private String setPicPath(String path, String name, String expanded_name) {
 		StringBuffer filePath = new StringBuffer();
 		long time = System.currentTimeMillis();
+
+		filePath.append(sdcardFilePatch);
 		filePath.append(PATHDIVISION);
 		filePath.append(path);
 		filePath.append(PATHDIVISION);
@@ -126,31 +130,26 @@ public class CameraControlActivity extends Activity {
 	}
 
 	private void savePic(Bitmap cameraBitmap) {
-		File myCaptureFile = new File(setPicPath("sdcard", "camera", ".jpg"));
-		// myCaptureFile.mkdirs();
-		// if (myCaptureFile.canRead())
-		// Log.v("EagleTag", "very bad-canRead");
-		//
-		// if (myCaptureFile.canWrite())
-		// Log.v("EagleTag", "very bad-canRead");
+		File dir = UtilHelp.openDir(sdcardFilePatch, "FastCandidCamera");
+		if (!dir.exists()) {
+			// 判断文件夹是否存在,如果不存在则创建文件夹
+			dir.mkdir();
+		}
+		File myCaptureFile = new File(setPicPath("FastCandidCamera", "camera",
+				".jpg"));
 		try {
 			myCaptureFile.createNewFile();
 			FileOutputStream fileStream = new FileOutputStream(myCaptureFile);
 			cameraBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileStream);
 			UtilHelp.vibrator(this);
-			// Toast.makeText(getBaseContext(), "文件已经保存",
-			// Toast.LENGTH_LONG);
 			showToast("文件已经保存，按上键继续拍摄");
 			fileStream.flush();
 			fileStream.close();
 
-			mImagePlayback.setImageBitmap(cameraBitmap);
 		} catch (IOException e) {
 			e.printStackTrace();
-			// Toast.makeText(getBaseContext(), e.toString(),
-			// Toast.LENGTH_LONG);
-			showToast(e.toString());
 		}
+		mImagePlayback.setImageBitmap(cameraBitmap);
 	}
 
 	/*
@@ -174,7 +173,7 @@ public class CameraControlActivity extends Activity {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, 0, 0, "退出相机");
@@ -190,7 +189,8 @@ public class CameraControlActivity extends Activity {
 			System.exit(0);
 			break;
 		case 1:
-			Intent intent = new Intent(CameraControlActivity.this,SettingActivity.class);
+			Intent intent = new Intent(CameraControlActivity.this,
+					SettingActivity.class);
 			startActivityForResult(intent, SettingActivityRequestCode);
 			break;
 		case 2:

@@ -1,5 +1,7 @@
 package com.wucl.candid_camera;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
@@ -16,7 +18,6 @@ public class UtilHelp {
 	private static PowerManager powerManager;
 	private static WakeLock wakeLock;
 	private static AudioManager audioManager;
-
 
 	// <uses-permission android:name="android.permission.VIBRATE" />
 	/**
@@ -72,12 +73,19 @@ public class UtilHelp {
 		}
 
 	}
-	
-	
-	
-	public static void  get (Activity activity){
+
+	public static void getScreen(Activity activity) {
 		DisplayMetrics dm = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-		Log.i("","屏幕分辨率为:"+dm.widthPixels+" * "+dm.heightPixels);
+		Log.i("", "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels);
+	}
+
+	public static File openDir(File path, String folderName) {
+		String fileName = path + File.separator + folderName;
+		System.out.println(fileName);
+//		File.separator  //文件分隔符，系统自适应
+		File f = new File(fileName);
+		return f;
+		
 	}
 }
