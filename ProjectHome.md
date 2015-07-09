@@ -1,0 +1,1 @@
+Silent the photo was taken for android
